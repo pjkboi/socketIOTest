@@ -12,6 +12,10 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get('/javascript', (req, res) => {
+    res.sendFile(__dirname + '/public/javascript.html');
+});
+
 //tech namespace
 const tech = io.of('/tech');
 
@@ -29,7 +33,7 @@ tech.on('connection', (socket) => {
 });
 
 //anime namespace
-const anime = io.of('/anime');
+const anime = io.of('/javascript');
 
 anime.on('connection', (socket) => {
     socket.on('join', (data) => {

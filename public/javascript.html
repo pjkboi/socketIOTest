@@ -12,28 +12,46 @@
       #messages li:nth-child(odd){background: #eee;}
     </style>
   </head>
-  <body>  
-    <div class="bg-light p-lg">
-      <div class="container">
-        <h1>Chat room</h1>
-        <p>Pick a room</p>
-      </div>
-      
-    </div>
+  <body>
+    <h1>JS Chat</h1>
     <div class="container-fluid">
       <div class="row">
-        <ul class="list-group col">
-          <a href="/javascript" class="list-group-item list-group-item-action">Javascript</a>
-          <a href="/Anime" class="list-group-item">Anime</a>
-          <a href="/Anime" class="list-group-item">A third item</a>
-        </ul>
+        <ul id="messages"></ul>
       </div>
-      
+      <div class="row">
+        <div class="col-lg-6">
+          <form action="">
+            <div class="input-group">
+              <input id="m" autocomplete="off" type="text" class="form-control" placeholder="Message..." aria-label="Message...">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="submit">Send</button>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+      const room = 'javascript'
+      const socket = io('/javascript');
+      $('form').submit(() => {
+        let msg = $('#m').val()
+        socket.emit('message', { msg, room });
+        $('#m').val('');
+        return false;
+      });
+
+      socket.on('connect', () =>{
+        //emitting to everybody
+        socket.emit('join', {room: room});
+      });
+
+      socket.on('message', (msg) => {
+        $('#messages').append($('<li>').text(msg));
+      })
     </script>
   </body>
 </html>
