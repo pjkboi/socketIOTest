@@ -35,16 +35,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      const socket = io('/tech');
+      const room = 'anime'
+      const socket = io('/anime');
       $('form').submit(() => {
-        socket.emit('message', $('#m').val());
+        let msg = $('#m').val()
+        socket.emit('message', { msg, room });
         $('#m').val('');
         return false;
       });
 
       socket.on('connect', () =>{
         //emitting to everybody
-        socket.emit('message', 'user connected');
+        socket.emit('join', {room: room});
       });
 
       socket.on('message', (msg) => {

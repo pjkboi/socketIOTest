@@ -32,10 +32,13 @@ tech.on('connection', (socket) => {
 const anime = io.of('/anime');
 
 anime.on('connection', (socket) => {
-    console.log('user connected');
-    socket.on('message', (msg) => {
-        console.log(`message: ${msg}`);
-        anime.emit('message', msg);
+    socket.on('join', (data) => {
+        socket.join(data.room);
+        anime.in(data.room).emit('message' , `New user joined the ${data.room} room`);
+    });
+    socket.on('message', (data) => {
+        console.log(`message: ${data.msg}`);
+        anime.in(data.room).emit('message', data.msg);
     });
     socket.on('disconnect', () => {
         console.log("user disconnected");
