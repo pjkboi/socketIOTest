@@ -12,15 +12,34 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-io.on('connection', (socket) => {
+//tech namespace
+const tech = io.of('/tech');
+
+tech.on('connection', (socket) => {
     console.log('user connected');
     socket.on('message', (msg) => {
         console.log(`message: ${msg}`);
-        io.emit('message', msg);
+        tech.emit('message', msg);
     });
     socket.on('disconnect', () => {
         console.log("user disconnected");
-        io.emit('message', 'user disconnected');
+        tech.emit('message', 'user disconnected');
+    });
+
+});
+
+//anime namespace
+const anime = io.of('/anime');
+
+anime.on('connection', (socket) => {
+    console.log('user connected');
+    socket.on('message', (msg) => {
+        console.log(`message: ${msg}`);
+        anime.emit('message', msg);
+    });
+    socket.on('disconnect', () => {
+        console.log("user disconnected");
+        anime.emit('message', 'user disconnected');
     });
 
 });
