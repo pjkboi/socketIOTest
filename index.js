@@ -16,14 +16,25 @@ app.get('/javascript', (req, res) => {
     res.sendFile(__dirname + '/public/javascript.html');
 });
 
-//tech namespace
-const tech = io.of('/tech');
+app.get('/anime', (req, res) => {
+    res.sendFile(__dirname + '/public/Anime.html');
+});
+
+app.get('/random', (req, res) => {
+    res.sendFile(__dirname + '/public/Random.html');
+});
+
+//anime namespace
+const tech = io.of('/javascript');
 
 tech.on('connection', (socket) => {
-    console.log('user connected');
-    socket.on('message', (msg) => {
-        console.log(`message: ${msg}`);
-        tech.emit('message', msg);
+    socket.on('join', (data) => {
+        socket.join(data.room);
+        tech.in(data.room).emit('message' , `New user joined the ${data.room} room`);
+    });
+    socket.on('message', (data) => {
+        console.log(`message: ${data.msg}`);
+        tech.in(data.room).emit('message', data.msg);
     });
     socket.on('disconnect', () => {
         console.log("user disconnected");
@@ -33,7 +44,7 @@ tech.on('connection', (socket) => {
 });
 
 //anime namespace
-const anime = io.of('/javascript');
+const anime = io.of('/anime');
 
 anime.on('connection', (socket) => {
     socket.on('join', (data) => {
@@ -47,6 +58,25 @@ anime.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log("user disconnected");
         anime.emit('message', 'user disconnected');
+    });
+
+});
+
+//random namespace
+const random = io.of('/random');
+
+random.on('connection', (socket) => {
+    socket.on('join', (data) => {
+        socket.join(data.room);
+        random.in(data.room).emit('message' , `New user joined the ${data.room} room`);
+    });
+    socket.on('message', (data) => {
+        console.log(`message: ${data.msg}`);
+        random.in(data.room).emit('message', data.msg);
+    });
+    socket.on('disconnect', () => {
+        console.log("user disconnected");
+        random.emit('message', 'user disconnected');
     });
 
 });
